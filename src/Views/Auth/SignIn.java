@@ -1,4 +1,9 @@
 package Views.Auth;
+
+import com.formdev.flatlaf.FlatLightLaf;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 public class SignIn extends javax.swing.JFrame {
     public SignIn() {
         initComponents();
@@ -93,6 +98,11 @@ public class SignIn extends javax.swing.JFrame {
     }//GEN-LAST:event_gotoSignUpMouseClicked
 
     public static void main(String args[]) {
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (UnsupportedLookAndFeelException ex) {
+            
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new SignIn().setVisible(true);
