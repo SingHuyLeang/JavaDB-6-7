@@ -1,5 +1,8 @@
 package Views.Home;
 
+import Component.MSG;
+import Controller.ProductController;
+import Model.ProductModel;
 import com.formdev.flatlaf.*;
 import java.awt.Image;
 import java.io.File;
@@ -8,6 +11,7 @@ import java.util.logging.Logger;
 import javax.swing.*;
 
 public class Home extends javax.swing.JFrame {
+    ProductController controller = new ProductController();
     public Home() {
         initComponents();
     }
@@ -43,6 +47,7 @@ public class Home extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         cbDiscount = new javax.swing.JComboBox<>();
         txtPrice = new javax.swing.JTextField();
+        txtId = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 600));
@@ -157,6 +162,10 @@ public class Home extends javax.swing.JFrame {
         txtPrice.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(100, 100, 100)));
         jPanel1.add(txtPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 370, 180, 30));
 
+        txtId.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
+        txtId.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(100, 100, 100)));
+        jPanel1.add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 557, 0, 0));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -185,19 +194,23 @@ public class Home extends javax.swing.JFrame {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         String name = txtName.getText();
-        String qty  = txtQty.getText();
-        String price = txtPrice.getText();
-        String discount = cbDiscount.getSelectedItem().toString();
+        String qty1  = txtQty.getText();
+        String price1 = txtPrice.getText();
+        String discount1 = cbDiscount.getSelectedItem().toString();
         String image = txtImage.getText();
         
-        if (!name.isEmpty() && !qty.isEmpty() && !price.isEmpty() && !discount.isEmpty() && !image.isEmpty()) {
-            System.out.println("Name     : "+name);
-            System.out.println("Qty      : "+qty);
-            System.out.println("Price    : "+price);
-            System.out.println("Discount : "+discount);
+        if (!name.isEmpty() && !qty1.isEmpty() && !price1.isEmpty() && !discount1.isEmpty() && !image.isEmpty()) {
+            int qty = Integer.parseInt(qty1);
+            double price = Double.parseDouble(price1);
+            int discount = Integer.parseInt(discount1.substring(0, discount1.length()-2));
+            
+            double total = qty * price;
+            double payment = total - (total * discount)/100;
+            
+            controller.addProduct(new ProductModel(name, qty, price, total, discount, payment, image));
             clearAllField();
         }else{
-            JOptionPane.showMessageDialog(this, "Please enter all field", "Warining", JOptionPane.WARNING_MESSAGE);
+            MSG.warning("Please enter all field");
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -233,6 +246,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbImage;
     private javax.swing.JTable table;
+    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtImage;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPrice;
