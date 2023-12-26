@@ -2,8 +2,9 @@ package Controller;
 
 import Database.Connecter;
 import Model.UserModel;
-import Views.Home.Home;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserController extends Connecter{
     public Boolean signUpWithEmailAndPassword(UserModel user){
@@ -18,6 +19,21 @@ public class UserController extends Connecter{
                 return true;
             } else {
                 System.out.println("Sign Up not Success");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+    public Boolean signInWithEmailAndPassword(UserModel user){
+        try {
+            String sql = "SELECT * FROM `authantication` WHERE `email`=? AND `password`=MD5(?)";
+            ps = connection().prepareStatement(sql);
+            ps.setString(1, user.getEmail());
+            ps.setString(2, user.getPassword());
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return true;
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

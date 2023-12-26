@@ -1,5 +1,9 @@
 package Views.Auth;
 
+import Component.MSG;
+import Controller.UserController;
+import Model.UserModel;
+import Views.Home.Home;
 import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -15,12 +19,12 @@ public class SignIn extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtEmail = new javax.swing.JTextField();
         gotoSignUp = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnSignIn = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -34,10 +38,10 @@ public class SignIn extends javax.swing.JFrame {
         jLabel1.setText("Sign In");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 36, 800, 75));
 
-        jTextField1.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        jTextField1.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(100, 100, 100)));
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 170, 240, 31));
+        txtEmail.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
+        txtEmail.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        txtEmail.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(100, 100, 100)));
+        jPanel1.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 170, 240, 31));
 
         gotoSignUp.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
         gotoSignUp.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -55,10 +59,10 @@ public class SignIn extends javax.swing.JFrame {
         jLabel3.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(100, 100, 100)));
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 170, 110, 31));
 
-        jTextField2.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        jTextField2.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(100, 100, 100)));
-        jPanel1.add(jTextField2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 220, 240, 31));
+        txtPassword.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
+        txtPassword.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        txtPassword.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(100, 100, 100)));
+        jPanel1.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 220, 240, 31));
 
         jLabel4.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -66,11 +70,16 @@ public class SignIn extends javax.swing.JFrame {
         jLabel4.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(100, 100, 100)));
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 220, 110, 31));
 
-        jButton1.setBackground(new java.awt.Color(240, 240, 240));
-        jButton1.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
-        jButton1.setText("Sign In");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 290, 160, 40));
+        btnSignIn.setBackground(new java.awt.Color(240, 240, 240));
+        btnSignIn.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
+        btnSignIn.setText("Sign In");
+        btnSignIn.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        btnSignIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSignInActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnSignIn, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 290, 160, 40));
 
         jLabel5.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -97,6 +106,22 @@ public class SignIn extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_gotoSignUpMouseClicked
 
+    private void btnSignInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignInActionPerformed
+        String email = txtEmail.getText();
+        String password = txtPassword.getText();
+        if (!email.isEmpty() && !password.isEmpty()) {
+            UserController user = new UserController();
+            if (user.signInWithEmailAndPassword(new UserModel(email, password))) {
+                new Home().setVisible(true);
+                dispose();
+            } else {
+                MSG.error("Your account is invalid");
+            }
+        } else {
+            MSG.warning("Please Enter you data");
+        }
+    }//GEN-LAST:event_btnSignInActionPerformed
+
     public static void main(String args[]) {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
@@ -111,14 +136,14 @@ public class SignIn extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSignIn;
     private javax.swing.JLabel gotoSignUp;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField txtEmail;
+    private javax.swing.JTextField txtPassword;
     // End of variables declaration//GEN-END:variables
 }

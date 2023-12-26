@@ -1,10 +1,10 @@
 package Views.Auth;
 
+import Component.MSG;
 import Controller.UserController;
 import Model.UserModel;
 import Views.Home.Home;
 import com.formdev.flatlaf.FlatLightLaf;
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -134,10 +134,10 @@ public class SignUp extends javax.swing.JFrame {
                     dispose();
                 }
             }else{
-                JOptionPane.showMessageDialog(this, "Wrong Confirm Password", "", 2);
+                MSG.error("Wrong Confirm Password");
             }
         }else{
-            JOptionPane.showMessageDialog(this, "Please Enter you data", "", 2);
+            MSG.error("Please Enter you data");
         }
         
     }//GEN-LAST:event_btnSignUpActionPerformed
