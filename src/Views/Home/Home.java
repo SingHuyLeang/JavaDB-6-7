@@ -12,12 +12,13 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class Home extends javax.swing.JFrame {
+
     ProductController controller = new ProductController();
-    
-    private void getData(){
+
+    private void getData() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-        controller.getData().forEach((product)->{
+        controller.getData().forEach((product) -> {
             Object[] row = {
                 product.getId(),
                 product.getName(),
@@ -32,11 +33,13 @@ public class Home extends javax.swing.JFrame {
             model.addRow(row);
         });
     }
+
     public Home() {
         initComponents();
         getData();
     }
-    public void clearAllField(){
+
+    public void clearAllField() {
         txtName.setText("");
         txtQty.setText("");
         txtPrice.setText("");
@@ -44,9 +47,7 @@ public class Home extends javax.swing.JFrame {
         txtImage.setText("");
         lbImage.setIcon(null);
     }
-    
-    
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -91,6 +92,11 @@ public class Home extends javax.swing.JFrame {
                 "Id", "Name", "Quantity", "Price", "Total", "Discount", "Payment", "Image", "Date"
             }
         ));
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(table);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 910, 260));
@@ -217,23 +223,23 @@ public class Home extends javax.swing.JFrame {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         String name = txtName.getText();
-        String qty1  = txtQty.getText();
+        String qty1 = txtQty.getText();
         String price1 = txtPrice.getText();
         String discount1 = cbDiscount.getSelectedItem().toString();
         String image = txtImage.getText();
-        
+
         if (!name.isEmpty() && !qty1.isEmpty() && !price1.isEmpty() && !discount1.isEmpty() && !image.isEmpty()) {
             int qty = Integer.parseInt(qty1);
             double price = Double.parseDouble(price1);
-            int discount = Integer.parseInt(discount1.substring(0, discount1.length()-2));
-            
+            int discount = Integer.parseInt(discount1.substring(0, discount1.length() - 2));
+
             double total = qty * price;
-            double payment = total - (total * discount)/100;
-            
+            double payment = total - (total * discount) / 100;
+
             controller.addProduct(new ProductModel(name, qty, price, total, discount, payment, image));
             clearAllField();
             getData();
-        }else{
+        } else {
             MSG.warning("Please enter all field");
         }
     }//GEN-LAST:event_btnAddActionPerformed
@@ -241,6 +247,27 @@ public class Home extends javax.swing.JFrame {
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
         clearAllField();
     }//GEN-LAST:event_btnClearActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        int row = table.getSelectedRow();
+        txtId.setText(model.getValueAt(row, 0).toString());
+        txtName.setText(model.getValueAt(row, 1).toString());
+        txtQty.setText(model.getValueAt(row, 2).toString());
+        txtPrice.setText(model.getValueAt(row, 3).toString());
+        cbDiscount.setSelectedIndex(
+                model.getValueAt(row, 4).toString().equals("0") ? 0
+                : model.getValueAt(row, 4).toString().equals("10") ? 1
+                : model.getValueAt(row, 4).toString().equals("20") ? 2
+                : model.getValueAt(row, 4).toString().equals("30") ? 3
+                : model.getValueAt(row, 4).toString().equals("40") ? 4
+                : 5
+        );
+        txtImage.setText(model.getValueAt(row, 7).toString());
+        ImageIcon imgIcon = new ImageIcon(txtImage.getText());
+        Image image = imgIcon.getImage().getScaledInstance(lbImage.getWidth(), lbImage.getHeight(), Image.SCALE_SMOOTH);
+        lbImage.setIcon(new ImageIcon(image));
+    }//GEN-LAST:event_tableMouseClicked
     public static void main(String args[]) {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
