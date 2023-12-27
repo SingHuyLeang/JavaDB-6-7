@@ -9,11 +9,32 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class Home extends javax.swing.JFrame {
     ProductController controller = new ProductController();
+    
+    private void getData(){
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+        controller.getData().forEach((product)->{
+            Object[] row = {
+                product.getId(),
+                product.getName(),
+                product.getQty(),
+                product.getPrice(),
+                product.getTotal(),
+                product.getDiscount(),
+                product.getPayment(),
+                product.getImage(),
+                product.getDate()
+            };
+            model.addRow(row);
+        });
+    }
     public Home() {
         initComponents();
+        getData();
     }
     public void clearAllField(){
         txtName.setText("");
@@ -23,6 +44,8 @@ public class Home extends javax.swing.JFrame {
         txtImage.setText("");
         lbImage.setIcon(null);
     }
+    
+    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -209,6 +232,7 @@ public class Home extends javax.swing.JFrame {
             
             controller.addProduct(new ProductModel(name, qty, price, total, discount, payment, image));
             clearAllField();
+            getData();
         }else{
             MSG.warning("Please enter all field");
         }
