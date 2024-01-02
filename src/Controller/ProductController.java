@@ -7,6 +7,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ProductController extends Connecter{
     PreparedStatement ps;
@@ -56,6 +58,44 @@ public class ProductController extends Connecter{
             e.printStackTrace();
         }
         return list;
+    }
+    public void updateProduct(ProductModel product){
+        String sql = "UPDATE `tbl_product` SET `name`=?,`qty`=?,`price`=?,`total`=?,`discount`=?,`payment`=?,`image`=? WHERE `id`=?";
+        try {
+            ps = connection().prepareStatement(sql);
+            ps.setString(1, product.getName());
+            ps.setInt(2, product.getQty());
+            ps.setDouble(3, product.getPrice());
+            ps.setDouble(4, product.getTotal());
+            ps.setInt(5, product.getDiscount());
+            ps.setDouble(6, product.getPayment());
+            ps.setString(7, product.getImage());
+            ps.setInt(8, product.getId());
+            
+            int i = ps.executeUpdate();
+            if (i>0) {
+                MSG.success("Product updated");
+            } else {
+                MSG.success("Product can't be update");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void deleteProduct(int id){
+        String sql = "DELETE FROM `tbl_product` WHERE `id` = ?";
+        try {
+            ps = connection().prepareStatement(sql);
+            ps.setInt(1, id);
+            int i = ps.executeUpdate();
+            if (i>0) {
+                MSG.success("Product deleted");
+            } else {
+                MSG.success("Product can't be delete");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
 

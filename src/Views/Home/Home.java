@@ -6,8 +6,6 @@ import Model.ProductModel;
 import com.formdev.flatlaf.*;
 import java.awt.Image;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -153,11 +151,21 @@ public class Home extends javax.swing.JFrame {
         btnUpdate.setBackground(new java.awt.Color(255, 255, 204));
         btnUpdate.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
         btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 530, 130, -1));
 
         btnDelete.setBackground(new java.awt.Color(255, 153, 153));
         btnDelete.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
         btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 530, 130, -1));
 
         btnClear.setBackground(new java.awt.Color(255, 204, 204));
@@ -256,11 +264,11 @@ public class Home extends javax.swing.JFrame {
         txtQty.setText(model.getValueAt(row, 2).toString());
         txtPrice.setText(model.getValueAt(row, 3).toString());
         cbDiscount.setSelectedIndex(
-                model.getValueAt(row, 4).toString().equals("0") ? 0
-                : model.getValueAt(row, 4).toString().equals("10") ? 1
-                : model.getValueAt(row, 4).toString().equals("20") ? 2
-                : model.getValueAt(row, 4).toString().equals("30") ? 3
-                : model.getValueAt(row, 4).toString().equals("40") ? 4
+                model.getValueAt(row, 5).toString().equals("0") ? 0
+                : model.getValueAt(row, 5).toString().equals("10") ? 1
+                : model.getValueAt(row, 5).toString().equals("20") ? 2
+                : model.getValueAt(row, 5).toString().equals("30") ? 3
+                : model.getValueAt(row, 5).toString().equals("40") ? 4
                 : 5
         );
         txtImage.setText(model.getValueAt(row, 7).toString());
@@ -268,11 +276,44 @@ public class Home extends javax.swing.JFrame {
         Image image = imgIcon.getImage().getScaledInstance(lbImage.getWidth(), lbImage.getHeight(), Image.SCALE_SMOOTH);
         lbImage.setIcon(new ImageIcon(image));
     }//GEN-LAST:event_tableMouseClicked
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        String name = txtName.getText();
+        String qty1 = txtQty.getText();
+        String price1 = txtPrice.getText();
+        String discount1 = cbDiscount.getSelectedItem().toString();
+        String image = txtImage.getText();
+
+        if (!name.isEmpty() && !qty1.isEmpty() && !price1.isEmpty() && !discount1.isEmpty() && !image.isEmpty()) {
+            int qty = Integer.parseInt(qty1);
+            double price = Double.parseDouble(price1);
+            int discount = Integer.parseInt(discount1.substring(0, discount1.length() - 2));
+            int id = Integer.parseInt(txtId.getText());
+            double total = qty * price;
+            double payment = total - (total * discount) / 100;
+
+            controller.updateProduct(new ProductModel(id,name, qty, price, total, discount, payment, image));
+            clearAllField();
+            getData();
+        } else {
+            MSG.warning("Please enter all field");
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        if (!txtId.getText().isEmpty()) {
+            controller.deleteProduct(Integer.parseInt(txtId.getText()));
+            getData();
+            clearAllField();
+        } else {
+            MSG.warning("Please Select");
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
     public static void main(String args[]) {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

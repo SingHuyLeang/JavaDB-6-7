@@ -20,6 +20,17 @@ public class ProductModel {
         this.image = image;
     }
 
+    public ProductModel(int id, String name, int qty, double price, double total, int discount, double payment, String image) {
+        this.id = id;
+        this.name = name;
+        this.qty = qty;
+        this.price = price;
+        this.total = total;
+        this.discount = discount;
+        this.payment = payment;
+        this.image = image;
+    }
+
     public ProductModel(int id, String name, int qty, double price, double total, int discount, double payment, String image, String date) {
         this.id = id;
         this.name = name;
@@ -31,6 +42,8 @@ public class ProductModel {
         this.image = image;
         this.date = date;
     }
+    
+    
     
     
 
