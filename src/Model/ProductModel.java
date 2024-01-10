@@ -41,12 +41,9 @@ public class ProductModel {
         this.payment = payment;
         this.image = image;
         this.date = date;
-    }
+    }  
     
     
-    
-    
-
     public int getId() {
         return id;
     }

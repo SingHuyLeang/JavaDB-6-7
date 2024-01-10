@@ -3,12 +3,11 @@ package Controller;
 import Component.MSG;
 import Database.Connecter;
 import Model.ProductModel;
+import Model.ProductReport;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ProductController extends Connecter{
     PreparedStatement ps;
@@ -59,6 +58,32 @@ public class ProductController extends Connecter{
         }
         return list;
     }
+    
+    public List<ProductReport> getDataForReport(){
+        List<ProductReport> list = new ArrayList<>();
+        try {
+            String sql = "SELECT `id`, `name`, `qty`, `price`, `total`, `discount`, `payment`,`date` FROM `tbl_product`";
+            ps = connection().prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {                
+                ProductReport product = new ProductReport(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getInt(3),
+                        rs.getDouble(4),
+                        rs.getDouble(5),
+                        rs.getInt(6),
+                        rs.getDouble(7),
+                        rs.getString(8)
+                );
+                list.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
     public void updateProduct(ProductModel product){
         String sql = "UPDATE `tbl_product` SET `name`=?,`qty`=?,`price`=?,`total`=?,`discount`=?,`payment`=?,`image`=? WHERE `id`=?";
         try {

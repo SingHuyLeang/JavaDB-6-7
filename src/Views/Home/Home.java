@@ -3,11 +3,22 @@ package Views.Home;
 import Component.MSG;
 import Controller.ProductController;
 import Model.ProductModel;
+import Model.ProductReport;
 import com.formdev.flatlaf.*;
 import java.awt.Image;
 import java.io.File;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class Home extends javax.swing.JFrame {
 
@@ -64,12 +75,13 @@ public class Home extends javax.swing.JFrame {
         btnAdd = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
-        btnClear = new javax.swing.JButton();
+        btnPrintReport = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         cbDiscount = new javax.swing.JComboBox<>();
         txtPrice = new javax.swing.JTextField();
         txtId = new javax.swing.JTextField();
+        btnClear = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 600));
@@ -122,7 +134,7 @@ public class Home extends javax.swing.JFrame {
         lbImage.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
         lbImage.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbImage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel1.add(lbImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 360, 130, 140));
+        jPanel1.add(lbImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 360, 130, 140));
 
         txtImage.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
         txtImage.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(100, 100, 100)));
@@ -136,7 +148,7 @@ public class Home extends javax.swing.JFrame {
                 btnImageActionPerformed(evt);
             }
         });
-        jPanel1.add(btnImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 530, 130, -1));
+        jPanel1.add(btnImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 530, 130, -1));
 
         btnAdd.setBackground(new java.awt.Color(204, 255, 204));
         btnAdd.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
@@ -168,15 +180,15 @@ public class Home extends javax.swing.JFrame {
         });
         jPanel1.add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 530, 130, -1));
 
-        btnClear.setBackground(new java.awt.Color(255, 204, 204));
-        btnClear.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
-        btnClear.setText("Clear");
-        btnClear.addActionListener(new java.awt.event.ActionListener() {
+        btnPrintReport.setBackground(new java.awt.Color(255, 204, 255));
+        btnPrintReport.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
+        btnPrintReport.setText("Print");
+        btnPrintReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearActionPerformed(evt);
+                btnPrintReportActionPerformed(evt);
             }
         });
-        jPanel1.add(btnClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 530, 130, -1));
+        jPanel1.add(btnPrintReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 530, 130, -1));
 
         jLabel5.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -202,6 +214,16 @@ public class Home extends javax.swing.JFrame {
         txtId.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
         txtId.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(100, 100, 100)));
         jPanel1.add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 557, 0, 0));
+
+        btnClear.setBackground(new java.awt.Color(255, 204, 204));
+        btnClear.setFont(new java.awt.Font("Barlow", 0, 18)); // NOI18N
+        btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 530, 130, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -252,9 +274,32 @@ public class Home extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
-    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-        clearAllField();
-    }//GEN-LAST:event_btnClearActionPerformed
+    private void btnPrintReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrintReportActionPerformed
+        try {
+            System.out.println(controller.getDataForReport());
+            double amountdollar = 0;
+            double amountrial = 0;
+            
+            for (ProductReport product : controller.getDataForReport()) {
+                amountdollar+= product.getPayment();
+            }
+            amountrial = amountdollar*4100;
+            
+            System.out.println("Amount $ "+amountdollar);
+            System.out.println("Amount $ "+(amountdollar*4100));
+            
+            JasperReport report = JasperCompileManager.compileReport("src/Views/Home/report.jrxml");
+            HashMap<String,Object> map = new HashMap();
+            map.put("amountdollar", amountdollar);
+            map.put("amountrial", amountrial);
+            JRBeanCollectionDataSource source = new JRBeanCollectionDataSource(controller.getDataForReport());
+            JasperPrint print = JasperFillManager.fillReport(report, map, source);
+            JasperViewer.viewReport(print);
+            
+        } catch (JRException ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_btnPrintReportActionPerformed
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -309,6 +354,10 @@ public class Home extends javax.swing.JFrame {
             MSG.warning("Please Select");
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        clearAllField();
+    }//GEN-LAST:event_btnClearActionPerformed
     public static void main(String args[]) {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
@@ -327,6 +376,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnImage;
+    private javax.swing.JButton btnPrintReport;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox<String> cbDiscount;
     private javax.swing.JLabel jLabel1;
