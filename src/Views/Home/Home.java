@@ -8,8 +8,6 @@ import com.formdev.flatlaf.*;
 import java.awt.Image;
 import java.io.File;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JRException;
@@ -24,10 +22,10 @@ public class Home extends javax.swing.JFrame {
 
     ProductController controller = new ProductController();
 
-    private void getData() {
+    private void getData(String FindBy,String data) {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
-        controller.getData().forEach((product) -> {
+        controller.getData(FindBy,data).forEach((product) -> {
             Object[] row = {
                 product.getId(),
                 product.getName(),
@@ -45,7 +43,7 @@ public class Home extends javax.swing.JFrame {
 
     public Home() {
         initComponents();
-        getData();
+        getData(null,"");
     }
 
     public void clearAllField() {
@@ -82,6 +80,8 @@ public class Home extends javax.swing.JFrame {
         txtPrice = new javax.swing.JTextField();
         txtId = new javax.swing.JTextField();
         btnClear = new javax.swing.JButton();
+        txtSearch = new javax.swing.JTextField();
+        cbFind = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 600));
@@ -92,7 +92,7 @@ public class Home extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Barlow", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("SHOP");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, 988, 78));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 0, 110, 78));
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -225,6 +225,16 @@ public class Home extends javax.swing.JFrame {
         });
         jPanel1.add(btnClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 530, 130, -1));
 
+        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchActionPerformed(evt);
+            }
+        });
+        jPanel1.add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 280, 40));
+
+        cbFind.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Id", "Name", " " }));
+        jPanel1.add(cbFind, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 30, 110, 40));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -268,7 +278,7 @@ public class Home extends javax.swing.JFrame {
 
             controller.addProduct(new ProductModel(name, qty, price, total, discount, payment, image));
             clearAllField();
-            getData();
+            getData(null,null);
         } else {
             MSG.warning("Please enter all field");
         }
@@ -339,7 +349,7 @@ public class Home extends javax.swing.JFrame {
 
             controller.updateProduct(new ProductModel(id,name, qty, price, total, discount, payment, image));
             clearAllField();
-            getData();
+            getData(null,null);
         } else {
             MSG.warning("Please enter all field");
         }
@@ -348,7 +358,7 @@ public class Home extends javax.swing.JFrame {
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         if (!txtId.getText().isEmpty()) {
             controller.deleteProduct(Integer.parseInt(txtId.getText()));
-            getData();
+            getData(null,null);
             clearAllField();
         } else {
             MSG.warning("Please Select");
@@ -358,6 +368,11 @@ public class Home extends javax.swing.JFrame {
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
         clearAllField();
     }//GEN-LAST:event_btnClearActionPerformed
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        String findBy = cbFind.getSelectedItem().toString();
+        getData(findBy,txtSearch.getText());
+    }//GEN-LAST:event_txtSearchActionPerformed
     public static void main(String args[]) {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
@@ -379,6 +394,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton btnPrintReport;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox<String> cbDiscount;
+    private javax.swing.JComboBox<String> cbFind;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -393,5 +409,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtQty;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

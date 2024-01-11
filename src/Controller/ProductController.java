@@ -33,10 +33,15 @@ public class ProductController extends Connecter{
             e.printStackTrace();
         }
     }
-    public Collection<ProductModel> getData(){
+    public Collection<ProductModel> getData(String filterBy,String data){
+        
+        String query = (data.isEmpty() || data == null) ? "" : "WHERE "+(filterBy.equalsIgnoreCase("id")? "`id` = "+Integer.parseInt(data) : "`name` LIKE \"%"+data+"%\"");
+        
+        System.out.println(query);
+        
         List<ProductModel> list = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM `tbl_product`";
+            String sql = "SELECT * FROM `tbl_product`"+query;
             ps = connection().prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {                
